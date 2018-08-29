@@ -63,7 +63,7 @@ function updateStockQuantity(qty, userId) {
     function(err) {
       // console.log(res);
       if (err) throw err;
-      console.log("Stock Quantity Updated for " + product_name);
+      console.log("Stock Quantity Updated for ID: " + userId);
     }
   );
 }
@@ -91,10 +91,10 @@ function totalPrice(qty, userId) {
 
 // Constructor function to store the customer's info
 
-function Order(id, quantity) {
-  this.id = id;
-  this.quantity = quantity;
-}
+// function Order(id, quantity) {
+//   this.id = id;
+//   this.quantity = quantity;
+// }
 
 // var orderArray = [];
 
