@@ -19,21 +19,23 @@ var connection = mysql.createConnection({
   database: process.env.mySQL_database
 });
 
+// Create connection
+
 connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected as ID " + connection.threadId);
   queryAllItems();
-  //   updateStockQuantity(2, 1);
-  //   totalPrice(2, 1);
-  promptCustomer();
+  // promptCustomer();
+  updateStockQuantity(2, 1);
+  // // totalPrice(2, 1);
   connection.end();
 });
 
+// Function to query all the items that are in stock
+
 function queryAllItems() {
-  connection.query("SELECT * FROM products WHERE stock_quantity <> 0", function(
-    err,
-    res
-  ) {
+  var query = "SELECT * FROM products WHERE stock_quantity <> 0";
+  connection.query(query, function(err, res) {
     if (err) throw err;
     for (var i = 0; i < res.length; i++) {
       console.log(
@@ -43,9 +45,13 @@ function queryAllItems() {
   });
 }
 
+// Function that updates the stock quantity after customer orders
+
 function updateStockQuantity(qty, userId) {
+  var query = "UPDATE products SET ? WHERE ?";
+
   connection.query(
-    "UPDATE products SET ? WHERE ?",
+    query,
     [
       {
         stock_quantity: stock_quantity - qty
@@ -54,26 +60,29 @@ function updateStockQuantity(qty, userId) {
         id: userId
       }
     ],
-    function(err, res) {
-      console.log(res);
+    function(err) {
+      // console.log(res);
       if (err) throw err;
-      console.log("Stock Quantity Updated for " + res[0].product_name);
+      console.log("Stock Quantity Updated for " + product_name);
     }
   );
 }
 
+// functionn that provides the customer with their total price
+
 function totalPrice(qty, userId) {
+  var query = "SELECT * FROM products WHERE ?";
   if (qty !== 0) {
     connection.query(
-      "SELECT * FROM products WHERE ?",
+      query,
       {
         id: userId
       },
       function(err, res) {
-        console.log(res);
-        if (err) throw err;
-        var price = res[0].price;
-        console.log("Your Total is " + price * qty);
+        // console.log(res);
+        // if (err) throw err;
+        var userPrice = res[0].price;
+        console.log("Your Total is " + userPrice * qty);
       }
     );
   }
@@ -81,6 +90,7 @@ function totalPrice(qty, userId) {
 }
 
 // Constructor function to store the customer's info
+
 function Order(id, quantity) {
   this.id = id;
   this.quantity = quantity;
@@ -101,23 +111,24 @@ function promptCustomer() {
       }
     ])
     .then(function(answers) {
-      var newOrder = new Order(answers.id, answers.quantity);
-      console.log("New order: " + newOrder.id);
-      //   orderArray.push(newOrder);
+      // var newOrder = new Order(answers.id, answers.quantity);
+      console.log("New order ID: " + answers.id);
+      // console.log(newOrder);
+      var query = "SELECT * FROM products WHERE ?";
+      // orderArray.push(newOrder);
 
-      connection.query(
-        "SELECT * FROM products WHERE ?",
-        { id: newOrder.id },
-        function(err, res) {
-          console.log(res);
-          if (!(res[0].stock_quantity > newOrder.quantity)) {
-            console.log(
-              "Oh no! We don't have enough in stock! Try a lower quantity or come back when we restock!"
-            );
-          }
-          updateStockQuantity(newOrder.quantity, newOrder.id);
-          totalPrice(newOrder.quantity, newOrder.id);
+      connection.query(query, { id: answers.id }, function(err, res) {
+        // check error that occurs, and try to figure out how to read the res
+        // console.log(res);
+        var userStockQuantity = res[0].stock_quantity;
+        console.log(userStockQuantity);
+        if (userStockQuantity < answers.quantity) {
+          console.log(
+            "Oh no! We don't have enough in stock! Try a lower quantity or come back when we restock!"
+          );
         }
-      );
+        updateStockQuantity(answers.quantity, answers.id);
+        totalPrice(answers.quantity, answers.id);
+      });
     });
 }

@@ -50,3 +50,19 @@ INSERT INTO products(product_name, department_name, price, stock_quantity)
 VALUES ("pants", "clothing", 75.00, 35);
 
 SELECT * FROM products;
+
+INSERT INTO products(product_name, department_name, price, stock_quantity) 
+VALUES ("tops", "clothing", 20.00, 0);
+
+SELECT * FROM products;
+
+SELECT * FROM products WHERE stock_quantity <>0;
+SELECT * FROM products WHERE id=2
+
+UPDATE products SET 
+stock_quantity = stock_quantity - 2
+WHERE
+id = 4;
+
+SELECT * FROM products;
+
