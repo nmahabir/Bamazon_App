@@ -25,9 +25,9 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected as ID " + connection.threadId);
   queryAllItems();
-  // promptCustomer();
-  updateStockQuantity(2, 1);
-  // // totalPrice(2, 1);
+  promptCustomer();
+  // updateStockQuantity(2, 1);
+  // totalPrice(2, 1);
   connection.end();
 });
 
@@ -89,15 +89,6 @@ function totalPrice(qty, userId) {
   console.log("Please enter a quantity greater than 0");
 }
 
-// Constructor function to store the customer's info
-
-// function Order(id, quantity) {
-//   this.id = id;
-//   this.quantity = quantity;
-// }
-
-// var orderArray = [];
-
 function promptCustomer() {
   inquirer
     .prompt([
@@ -111,15 +102,14 @@ function promptCustomer() {
       }
     ])
     .then(function(answers) {
-      // var newOrder = new Order(answers.id, answers.quantity);
       console.log("New order ID: " + answers.id);
       // console.log(newOrder);
       var query = "SELECT * FROM products WHERE ?";
-      // orderArray.push(newOrder);
 
       connection.query(query, { id: answers.id }, function(err, res) {
+        // if (err) throw err;
         // check error that occurs, and try to figure out how to read the res
-        // console.log(res);
+        console.log(res);
         var userStockQuantity = res[0].stock_quantity;
         console.log(userStockQuantity);
         if (userStockQuantity < answers.quantity) {
