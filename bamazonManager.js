@@ -25,7 +25,7 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected as ID " + connection.threadId);
   //   promptManager();
-  //   productsForSale();
+  productsForSale();
   lowInventory();
   connection.end();
 });
@@ -67,9 +67,10 @@ function promptManager() {
 // function to list inventory
 
 function productsForSale() {
-  //   var query = "SELECT * FROM products";
-  connection.query("SELECT * FROM products", function(err, res) {
+  var query = "SELECT * FROM products";
+  connection.query(query, function(err, res) {
     // if (err) throw err;
+    console.log("Here's our products: ");
     for (var i = 0; i < res.length; i++) {
       console.log(
         res[i].id +
@@ -85,15 +86,13 @@ function productsForSale() {
 }
 function lowInventory() {
   var query =
-    // "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5";
-    connection.query(
-      "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5",
-      function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log(res[i].product_name);
-        }
-      }
-    );
+    "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5";
+  connection.query(query, function(err, res) {
+    console.log("Here's our low Inventory products: ");
+    for (var i = 0; i < res.length; i++) {
+      console.log(res[i].product_name + " | " + res[i].stock_quantity);
+    }
+  });
 }
 function addInventory() {}
 function addProduct() {}
