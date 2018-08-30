@@ -24,7 +24,9 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected as ID " + connection.threadId);
-  promptManager();
+  //   promptManager();
+  //   productsForSale();
+  lowInventory();
   connection.end();
 });
 
@@ -44,6 +46,7 @@ function promptManager() {
       ]
     })
     .then(function(answers) {
+      console.log("Menu Option: " + answers.menu_option);
       switch (answers.menu_option) {
         case "View our products for sale?":
           productsForSale();
@@ -63,7 +66,34 @@ function promptManager() {
 
 // function to list inventory
 
-function productsForSale() {}
-function lowInventory() {}
+function productsForSale() {
+  //   var query = "SELECT * FROM products";
+  connection.query("SELECT * FROM products", function(err, res) {
+    // if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      console.log(
+        res[i].id +
+          " | " +
+          res[i].product_name +
+          " | " +
+          res[i].price +
+          " | " +
+          res[i].stock_quantity
+      );
+    }
+  });
+}
+function lowInventory() {
+  var query =
+    // "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5";
+    connection.query(
+      "SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5",
+      function(err, res) {
+        for (var i = 0; i < res.length; i++) {
+          console.log(res[i].product_name);
+        }
+      }
+    );
+}
 function addInventory() {}
 function addProduct() {}
