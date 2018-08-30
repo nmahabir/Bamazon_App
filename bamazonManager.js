@@ -25,9 +25,10 @@ connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected as ID " + connection.threadId);
   //   promptManager();
-  productsForSale();
-  lowInventory();
-  connection.end();
+  //   productsForSale();
+  //   lowInventory();
+  addProduct();
+  //   connection.end();
 });
 
 // function to prompt the manager
@@ -95,4 +96,39 @@ function lowInventory() {
   });
 }
 function addInventory() {}
-function addProduct() {}
+function addProduct() {
+  inquirer
+    .prompt([
+      {
+        name: "product_name",
+        message: "What's the name of the new product"
+      },
+      {
+        name: "departmet_name",
+        message: "What department can this new product be found in?"
+      },
+      {
+        name: "price",
+        message: "What's the price of this product?"
+      },
+      {
+        name: "stock_quantity",
+        message: "How many of these products do we have to sell?"
+      }
+    ])
+    .then(function(answers) {
+      connection.query(
+        "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?"[
+          (answers.product_name,
+          answers.department_name,
+          answers.price,
+          answers.stock_quantity)
+        ]
+        // function(err) {
+        //   if (err) throw err;
+        //   console.log("New product added!");
+        // }
+      );
+      connection.end();
+    });
+}

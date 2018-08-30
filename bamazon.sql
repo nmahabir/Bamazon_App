@@ -66,3 +66,11 @@ id = 4;
 
 SELECT * FROM products;
 
+SELECT product_name, stock_quantity FROM products WHERE stock_quantity < 5;
+
+INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES 
+product_name = surfboards,
+department_name = sports & outdoors,
+price = 120.00,
+stock_quantity = 55;
+
